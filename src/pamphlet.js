@@ -95,4 +95,19 @@ For example, original image was 2.9 MB and the reduced version in tinyJPG is 688
 we get a peace of mind that the images aren't gonna be a problem.
 
 11- 5. Boilerplate Cleanup:
-*/
+Let's remove the boilerplate from when we started our project up and then we make sure that the downloaded files are in the correct place for
+us. Drop the assets and animations folder which are in the resources of this course, in the src folder of our project. So we have the
+assets and animations folder inside of the src folder of our arcdevelopment project directory.
+
+Remove the serviceworker.js , logo.svg, index.css , App.css and App.test.js . In App.js get rid of all of the elements inside
+<div className="App">, but let that <div> remains.
+Also delete the import statements of the files that we deleted in App.js and index.js .
+
+Also delete the code for service-worker in index.js (the comments at the bottom and also the line that says:
+serviceworker.unregister())
+
+Also delete the logo192 and logo512 then run npm start.
+
+It looks like the create-react-app has been updated to use JS 'strict-mode' by default. Material-UI currently doesn't perfectly support
+strict mode. So for now just remove the <React.StrictMode> tags and leave index the way you see in the video. */
+/* 12- 6. The AppBar Component */
