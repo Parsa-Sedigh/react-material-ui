@@ -144,5 +144,207 @@ our little hello world that we currently have which in the past was covered up b
 of html it's actually under the <AppBar>. So back it to fixed. Because with fixed value, it would be completely removed out of flow od
 document, the margin of body doesn't affect it and so it seems it's currently spanning all the width of screen.
 
-13-7. AppBar Transitions:
+13.7. AppBar Transitions:
+useScrollTrigger is essentially an event listener for when the user is scrolling and one of the options of it which is disableHysteresis, means
+is whether or not there's a little delay when the user is scrolling. So sometimes when you want the AppBar to go away(the hide on scroll),
+you actually sometimes will have a little delay there, but for this we don't want that, so we disable that.
+
+threshold options controls how far the user has to start scrolling BEFORE it TRIGGERS that even and so with a 0 for value, as soon as the
+user starts scrolling, it will trigger it, whereas if you put for example the default which is on 100, it would take the user scrolling
+farther down before the event listener triggers. Also you can get rid of target option which is in docs example because the docs example
+is on iframe, so it needed that target and remove the window from that destructuring line of the docs example.
+
+In returning expression, it returns a new version of whatever component you are wrapping with ElevationScroll component, it clones the children
+and returns a new copy of that element with a new elevation, depending on whether or not the trigger has been set(the ternary operator that we
+have there). If our event listener has set that trigger, then it will have an elevation of 4, so that's our floating state,
+otherwise it will remain flat and that's with an elevation of 0.
+
+14.8. Styling - Themes (Setup):
+Now that you know how to import materialUI comps and use them, it's time to customize those comps with their styling system.
+The first part of the styling system that we want to talk about is specifically the theming system that they have set up for us and how
+you can use the theming system to centralize your styles and create a consistent look throughout your app. There are a lot of benefits to
+the styling system that the materialUI uses.
+
+The first part of the theming system is the palette. The palette is a way to manage the colors used in your app but materialUI actually takes
+a step farther than that and provides interesting functionality around it for us. Let's look at how we can setup the theming system and what
+they already provide for us. So go to material ui styling sections(styles section).
+
+The materialUI styling solution is not actually adding anything to your bundle size, if it's used WITH materialUI, because you can actually use
+the styling solution separately.
+
+JSS is js to css compiler. JSS allows you to write all of your styles as a JS object in your comps and that enables interesting behavior like
+theme nesting and dynamic styles and self support. In dynamic styles you're able to use JS and state of your comps to change the styling.
+
+To start taking look at how we can use JSS for our styling in materialUI, we have to install a separate package which is @material-ui/styles in our
+project directory.
+
+Now go to customization>overview>overview tab of materialUI docs and there, in theming section.
+Themes let your apply a consistent tone to your app. So it allows you to centralize and customize all aspects of your design while still extending
+the default functionality provided by materialUI.
+The first step to get started is if we want to customize our theme, we need to use a theme provider comp. That theme provider comes from the package
+that we just installed(@material-ui/styles). So you need to wrap the comp that you want to have the theme provided to, with the <ThemeProvider> comp
+and then passing the theme to the theme prop(theme={theme}) on the <ThemeProvider> comp. So we're still going to have to create that theme file,
+but first let's make that <ThemeProvider> comp, setup.
+So in App.js get rid of that wrapping <div className="App"> and replace that with <ThemeProvider> comp. Now as we saw in the docs example, we still
+need that Theme file. So in the ui folder, create Theme.js . Now in theming docs, we want to generate a theme base on the options that we provided.
+So we use createMuiTheme() and the crucial thing is to import it from '@material-ui/core/styles' which is different than '@material-ui/styles'.
+So be aware that there is @material-ui/core/styles AND there is ALSO @material-ui/styles .
+When we create our MuiTheme, that creates an instance of the default MuiTheme and then essentially tells it that we want to overwrite any of the
+default values with that object we pass to createMuiTheme(). Then we're gonna store that newly modified theme with all of the overwritten values
+and all of the default values that we didn't overwrite, so store all of that as an object inside of our const named theme. Then we're gonna be
+passing that theme const into our <ThemeProvider> which then passes those styles onto our app.
+
+In Theme.js , we'll just have that being the default export of that file so that we can easily import it to just pass directly in, to the
+ThemeProvider.
+
+For now, I didn't pass any styles to overwrite the default styles of theme of material-ui. Because I want to know what the
+DEFAULT theme that they're providing for us has, so that we know WHAT VALUES we're overwriting(in the object we pass to createMuiTheme()) and how
+it is set up.
+For importing that default export of Theme file(like importing it in App file), we can name the importing thing, theme with lowercase t.
+Because it's not a component to name it with capital. Also as I mentioned, we import it with a name, so it can be easily accessed with
+that name which is theme to pass it to theme prop on <ThemeProvider> and now once we go ahead and start adding content into our theme file,
+it wil already be wired up and ready to go in our app.*/
+/* 15-9. Styling - Themes (Default Theme):
+In docs and in customization/default theme, it brings up the object that is the default theme provided to us.
+The common object is the common colors that you might use throughout your app. For type property which is default to light, you can
+set a light or a dark property for your palette which makes it easy to change a bunch of options just from one single value.
+The default theme comes with variance for the light and dark types. So you can imagine being able to programmatically implement a way to
+change between that light and dark setting.
+
+primary property is primary colors of your app and you actually JUST provide that main property for primary or secondary objects, materialUI then
+goes and generates a light and a dark version(light and dark properties alongside that main color you provided for primary and secondary objects) that
+you can call on, without having to EXPLICITLY set them. This is helpful if you only have a main color that you know you want to be using and then
+you just use that to AUTOMATICALLY create accents that you know are going to match. That's an interesting design feature that they included with
+this.
+
+Many materialUI comps get their default colors from that primary and secondary settings and so just by changing this, you'll automatically
+start seeing those colors show up when you use your comps. The error object of the object we pass to create a theme, it's just the same type of
+palette system and main, light and dark colors which that object(error object) has, although it's gonna be for when you're displaying error.
+
+The contrastThreshold, getContrastText, augumentColor and tonalOffset, are all options used for materialUI for figuring out how to balance the
+color of the text with the colors of the background for comps and making sure that it maintains the correct level of readability no matter what
+options you have set in your theme, You probably won't have to mess with those much, unless you start getting into specific color cases.
+
+In text object, it provides different opacities for your text, depending on it's importance on the screen.
+
+In background object, it has the default background-color for the entire page(the default property) as well as the paper comp(the paper property
+is responsible for that) which is used commonly throughout materialUI.
+
+In action object, again we have a number of different opacities depending on the action that you're trying to display.
+
+That was the entire palette object inside of theme object and all of the functionality that it provides to us with generating those other
+presets.
+
+16-10. Styling - Themes (Palette):
+In common object, for now we're not overwriting but actually adding some colors to that common collection of colors.
+Now we need to add those colors to our palette as well and get materialUI to generate the light and dark versions. So underneath the common object,
+add the primary property which is an object and there, the main property is the SAME blue color that we have in common object. So we COULD just
+copy that blue color again, but since we want to make sure that it's a CENTRALIZED and there's ONLY 1 spot where we use that color(where we write
+the ACTUAL value of that color), let's create 2 constants like arcBlue and ... (because we CAN'T write a property of object based on another
+property inside of that object).
+Now change the name of property in common object, from arcBlue to blue and from arcOrange to orange and we also need to use a template string for
+being able to USE those constants.
+So for primary and secondary objects, we specify their main property as our arcBlue variable(for primary) and arcOrange for secondary.
+
+So as you can see we have to specify our colors as STRINGS, for the values inside palette object.
+Now that we have those in place, not only will materialUI will generate a light and dark variants of our main color that we have given to the
+primary and secondary objects within our palette, but it will actually then change all of the comps that get their colors from the theme to use our
+main color that we've provided instead of the default materialUI colors.
+So now we have our own blue color instead of the default colors.
+
+So we have now officially styled our first materialUI comp and customized that AppBar to the theme that we have provided with our own custom colors.
+
+For AppBar we have another default prop of color which is set default to primary(so: color="primary") and with this, that tells materialUI to
+look up the primary object from our theme which it's main color is set to arcBlue currently. You can change color prop to secondary.
+
+Let's look at typography using materialUI's theming system.
+
+17-11. Styling - Themes (Typography):
+The other part of the theme is built for styling and that is for styling of text using the Typography comp. The Typography comp manages
+styling for text in the same way that the palette manages the styling for our color system.
+
+In docs and in customization/default theme we can see the default theme object the materialUI provides to us. Last time we took a look at
+palette object, but this time we're interested in typography object, there you can change the defaults for font across your app.
+The fontFamily by default will fall back, depending on whether or not the user's browser has the specified font.
+In fontSize you can change the base font-size for the app although the way the materialUI actually handles fonts with the Typography comp is a
+little different. So you set the fontSize in typography object but then under each of those h1, h2 and ... which are called typography variants and
+you can access them with the variant prop, in those objects(h1, h2, ...) they use a font-size based on rem which is a responsive unit and is
+based on the fontSize property that you set in typography object. So as you set a central font-size, then, they generate proportional responsive
+font-sizes for each varient(therefore, each variant has a separate fontSize property) which helps the look of your app across all device sizes.
+
+Now in Header file, use Typography comp. You can wrap a text inside Typography comp and also need to set the variant prop on that Typography comp and
+for value, specify whichever one of those variants from the default theme(h1, ...). So like: variant="h3" which also by default has font-weight of 400.
+But I want a font-weight of 300.
+For doing this, go to Theme.js file and outside of palette object, we're gonna give it another property(because we want to overwrite some stuff).
+So give it typography property and there, we can set our customizations for any of the variants. So there put the variants to customize(only put
+the things you want to actually CUSTOMIZE or OVERWRITE).
+
+Another prop that we have to control the styling of the text with our Typography comp is the color prop. This can be set to either of the
+theme options, so between primary(if you set both background-color and color to same thing the text would be disappear- remember that the background-
+color of materialUI comps are by default set to primary, so if you ALSO set the color prop to primary, the text might be get invisible.).
+The color prop can be primary, secondary or error.
+
+What if you don't want to change the h3 for all of them but you JUST want to specify changes for your h3 IN A SPECIFIC PLACE OF YOUR WEBSITE?
+We can do that using the inline styling system.
 */
+/* 18-12. Styling - Inline:
+You're now familiar with materialUI theming system and what the default theme provides for us. But what about when you don't actually need a
+theme? You're not trying to change all of the types of comps across your app but you just want to apply styling to one comp within your app?
+That is exactly what inline styling is and materialUI provides a great system for doing this which ties into the theming system.
+With that we can fix that margin problem with our AppBar which is covering up our little hello underneath it.
+
+In docs, styles/basics/getting started it shows you an example of how it's using inline styles to create that little button and it's using the
+makeStyles function which we pass our styles into it and those styles are in format of JSS as an object.
+
+Then we save that makeStyles() call with our style object passed to it, to useStyles constant. Then in our functional comp, we call
+useStyles as a function since it's a hook which now gives us access to the styles under the classes constant.
+
+By the time our comps are actually rendered, that JSS is compiled into actual css and so having it there on the classes constant, lets us just
+access that class.root for className.
+So makeStyles() GENERATES our styles and then useStyles() gives us ACCESS to them on our classes constant(which is the result of calling
+useStyles()).
+
+So now we understand how to setup our JSS styles and then get access to them within our comp. Let's use them in Header file. So above exporting
+of our Header comp, let's call makeStyles() and assign it to useStyles and in makeStyles(), we're actually gonna use a slightly different
+syntax than the docs example which is gonna give us access to the theme inside of our styles. We'll need a property from the theme to fix our
+problem with the header currently sitting on top of our hello text. So inside () of makeStyles(), we need to receive theme.
+In the first style that we want to create, we're gonna call the class toolbarMargin and inside of that toolbarMargin object, we're gonna use
+the spread operator to copy over some properties out of our theme. The property that we want specifically, is theme.mixins.toolbar.
+In docs and in it's customization/default theme, you can see the mixins object and there we have the toolbar object and in there we have a couple
+pf properties.
+By using the spread operator, we have now copied all of those styles over to where we can now apply them to a comp or in this actually just a
+regular html element.
+Then above the return statement of Header function, create the classes constant which is the result of calling useStyles() hook. That gives us
+access to the toolbarMargin style on our classes constant and then right below </ElevationScroll>, add a <div className={classes.toolbarMargin} />.
+Now we get an error which says: Parsing error: Adjacent jsx elements must be wrapped in an enclosing tag, so we can not have those two just
+sitting next to each other, so wrap them in <React.Fragment> . The <React.Fragment> makes it so that we can have those two elements sitting
+side by side each other without actually rendering anything else to the page.
+
+Now what that <div className={classes.toolbarMargin}> is doing is provided from materialUI. They give us that mixins.toolbar so that we can
+solve this exact problem. So that contains the height of our AppBar and when we apply it to that <div> which is place after </ElevationScroll> ,
+what it does is it creates a little cushion under the AppBar since the AppBar is floating fixed in place at the top of the screen and then
+pushes the currently hidden content underneath it, out to where it can be seen on the screen.
+
+19-13. AppBar Logo:
+Get rid of that <Typography> comp which is currently inside <Toolbar>.
+We can separate our imports for the materialUI comps versus our OWN created comps. Now import your logo in Header. So now:
+import logo from '../../assets/logo.svg';.
+After using that <img> with our imported logo, you notice 1) there's a gap on the left side of logo 2) our hello is covered
+by that image again!
+
+So now we want to remove the padding that exists by default in one of the inner <div>s of AppBar. Now instead of actually trying to provide a
+style to the image or to the toolbar that either removes the padding or moves the image one way or another to cover up the gap, materialUI provides
+an easy way for us to do this. So on the <Toolbar> we can use disableGutters prop and we could add a true value for that prop, but if you actually
+leave off the true, that is what it will just default to. So instead of disableGutters={true} we just said: disableGutters because it's default
+value is true.
+
+We used theme.mixins.toolbar which it applied a minimum height to the toolbar which makes it so it pushed our content out from underneath it.
+However we've now changed the height of our toolbar with the addition of the logo, but that extra minimum height margin set on that
+<div className={classes.toolbarMargin}> is still the same height as the previous default toolbar had and so that's why it's not pushing the
+content out far enough to cover the new height. So we need to add a little bit of extra height to that margin and get the content to pop
+back out again(visible again). So add a little extra marginBottom to toolbarMargin class.
+
+Currently we have an error that says: Error: while trying to use the following icon from the Manifest: http://localhost:3000/logo102.png (download
+error or resource isn't a valid image)
+
+20-14. Favicon:*/
